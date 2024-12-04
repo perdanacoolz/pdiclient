@@ -13,6 +13,10 @@ import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
 
+ import Item from "./components/Item";
+import Pos from "./components/Pos";
+import Laporan from "./components/Laporan";
+
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 
@@ -21,13 +25,24 @@ const App = () => {
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
+  const [currentItem, setCurrentItem] = useState(undefined);
+  const [currentPos, setCurrentPos] = useState(undefined);
+  const [currentLaporan, setCurrentLaporan] = useState(undefined);
+
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
+    const item = AuthService.getCurrentUser();
+    const pos = AuthService.getCurrentUser();
+    const laporan = AuthService.getCurrentUser();
+
     if (user) {
       setCurrentUser(user);
-      setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
-      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+      setCurrentItem(item);
+      setCurrentPos(pos);
+      setCurrentLaporan(laporan);
+      // setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
+      // setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
 
     EventBus.on("logout", () => {
@@ -44,13 +59,17 @@ const App = () => {
     setShowModeratorBoard(false);
     setShowAdminBoard(false);
     setCurrentUser(undefined);
+
+    setCurrentItem(undefined);
+    setCurrentPos(undefined);
+    setCurrentLaporan(undefined);
   };
 
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
-          bezKoder
+          PDI INDONESIA
         </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
@@ -82,8 +101,34 @@ const App = () => {
               </Link>
             </li>
           )}
+
+{currentItem && (
+            <li className="nav-item">
+              <Link to={"/item"} className="nav-link">
+                Item
+              </Link>
+            </li>
+          )}
+
+{currentPos && (
+            <li className="nav-item">
+              <Link to={"/pos"} className="nav-link">
+                Pos
+              </Link>
+            </li>
+          )}
+
+{currentLaporan && (
+            <li className="nav-item">
+              <Link to={"/laporan"} className="nav-link">
+                laporan
+              </Link>
+            </li>
+          )}
+ 
         </div>
 
+        
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
@@ -98,6 +143,8 @@ const App = () => {
             </li>
           </div>
         ) : (
+
+
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/login"} className="nav-link">
@@ -105,11 +152,11 @@ const App = () => {
               </Link>
             </li>
 
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link to={"/register"} className="nav-link">
                 Sign Up
               </Link>
-            </li>
+            </li> */}
           </div>
         )}
       </nav>
@@ -124,6 +171,10 @@ const App = () => {
           <Route path="/user" element={<BoardUser />} />
           <Route path="/mod" element={<BoardModerator />} />
           <Route path="/admin" element={<BoardAdmin />} />
+
+          <Route exact path="/item" element={<Item />} />
+          <Route exact path="/pos" element={<Pos />} />
+          <Route exact path="/laporan" element={<Laporan />} />
         </Routes>
       </div>
 
